@@ -1,6 +1,9 @@
 
 const module1 = require('./module1');
 const styles = module1.styling;
+
+const EandD = require('./crypto');
+
 const path = require('path');
 const http = require('http');
 const formidable = require('formidable');
@@ -8,6 +11,8 @@ const fs = require('fs');
 
 const directoryPath = path.join(__dirname, 'images');
 let imgArr = [];
+
+
 http.createServer(function (req, res) {
     switch (req.url) {
         case '/fileupload':
@@ -37,8 +42,9 @@ http.createServer(function (req, res) {
                 res.writeHead(200, {'Content-Type': 'text/html'});
                 res.write(`<ul style="font-family:${styles.font}">`);
                 files.forEach(function (file) {
+                    EandD.EandD(file);
                     imgArr.push(file);
-                    res.write(`<li><a style="color:${styles.color1}" href="./images/${file}">${file}</a></li>`);
+                    res.write(`<li><a style="color:${styles.color1}" href="./decryptedimages/${file}">${file}</a>`)
                 });
                 res.write(`</ul>`);
                 res.write(`<a style="color:${styles.color2}" href="/">Return</a>`);
@@ -60,9 +66,9 @@ http.createServer(function (req, res) {
             break;
     }
     for(let image of imgArr) {
-        if (req.url == `/images/${image}` ) {
+        if (req.url == `/decryptedimages/${image}` ) {
             res.writeHead(200,{'content-type':'image/jpg'});
-            fs.createReadStream(`./images/${image}`).pipe(res);
+            fs.createReadStream(`./decryptedimages/${image}`).pipe(res);
             break;
         }
     }
